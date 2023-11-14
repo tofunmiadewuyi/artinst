@@ -68,3 +68,21 @@ export const OutlineButtonWithIconAfter = ({label, action, state}: ButtonProps) 
         )
     }
 }
+
+export const TextButton = ({label, action}: ButtonProps) => {
+    return (
+        <button onClick={() => action()} 
+            className='hidden lg:block underline underline-offset-4 font-medium w-fit hover:no-underline hover:text-cream hover:-translate-y-[2px] transition ease-out'>
+            {label}
+        </button>
+    )
+}
+
+export const TextButtonWithIconBefore = ({label, action, state}: ButtonProps) => {
+    return (
+        <button onClick={() => action()} 
+            className='hidden lg:block underline underline-offset-4 font-medium w-fit hover:no-underline hover:text-cream hover:-translate-y-[2px] transition ease-out'>
+            <span>{`<-`}</span>  {label}
+        </button>
+    )
+}

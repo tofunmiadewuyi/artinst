@@ -1,25 +1,24 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { FilledButton } from "../../Button";
 import { Attribution } from "./attribution";
 import axios from "axios";
+import { NavContext } from "../../../App";
 
 export type Artwork = {
-    id: string
+    id: number
     image_id: string
     title: string 
     credit_line: string
     artist_title: string
 }
 
-type LandingProps = {
-    changePage: (page: string) => void
-}
+export function Landing() {
 
+    const changePage = useContext(NavContext)
 
-export function Landing({changePage}: LandingProps) {
     const [iiif_url, set_iiif_url] = useState<string>()
     const [artworks, setArtworks] = useState<Artwork[]>()
-    const [showing, setShowing] = useState<Artwork>({ id: '', image_id: '', title: '', credit_line: '', artist_title: '' })
+    const [showing, setShowing] = useState<Artwork>({ id: 0, image_id: '', title: '', credit_line: '', artist_title: '' })
     const [imageURL, setImageURL] = useState<string>()
     const [isVisible, setIsVisible] = useState(false)
 

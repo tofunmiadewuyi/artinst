@@ -2,8 +2,9 @@ import SearchIcon from '../../icons/search.svg'
 import { ExploreItem } from './ExploreItem'
 import { Artwork } from '../Landing/Landing'
 import { useEffect, useState } from 'react'
-import axios from 'axios'
 import { Pagination, PaginationData } from './Pagination'
+import axios from 'axios'
+import { Otherworks } from './ExploreItem'
 
 export type ExploreData = {
     config: {
@@ -23,7 +24,8 @@ export const Explore = () => {
     const [iiif_url, set_iiif_url] = useState<string>()
     const [artworks, setArtworks] = useState<Artwork[]>()
     const [pagination, setPagination] = useState<PaginationData>({prev:'', next:'', currentPage: 1, totalPages: 1, itemsToUpdate: (value: ExploreData) => {} })
-
+    const [expanded, setExpanded] = useState(0)
+    const [otherWorks, setOTherWorks] = useState<Otherworks[]>()
 
     const paginatedItems = (value:ExploreData) => {
         refreshData(value)
@@ -34,7 +36,6 @@ export const Explore = () => {
             set_iiif_url(iiif_url)
             const resultsArray =  data.data
             setArtworks(resultsArray)
-            
             setPagination({
                         prev: data.pagination.prev_url,
                         next: data.pagination.next_url,
@@ -42,7 +43,14 @@ export const Explore = () => {
                         totalPages: data.pagination.total_pages,
                         itemsToUpdate: paginatedItems
             })
+    }
 
+    const expandItem = (id: number) => {
+        setExpanded(id)
+    }
+
+    const setPieceInfo =  (works: Otherworks[]) => {
+        setOTherWorks(works)
     }
 
     useEffect(() => {
@@ -53,11 +61,12 @@ export const Explore = () => {
         }).catch(error => {
             console.error('Error:', error)
         })
-    }, [])
+        // eslint-disable-next-line
+    },[])
 
 
     return(
-        <div className="bg-coffee text-cream h-full w-screen flex flex-col gap-10 px-6 items-center lg:px-12">
+        <div className={`bg-coffee text-cream ${ expanded > 0 ? 'h-screen overflow-hidden' : 'h-full' }  w-screen flex flex-col gap-10 px-6 items-center lg:px-12`}>
             <section className="max-w-full h-min header mt-20 flex flex-col gap-6 items-center">
                 <div className="flex flex-col gap-3 text-left sm:text-center items-center">
                     <h1 className=" text-[56px] leading-[56px] font-bold tracking-tighter ">Explore to your hearts content.</h1>
@@ -74,7 +83,13 @@ export const Explore = () => {
                 <span className='py-1 px-3 rounded-2xl border border-cream/20 text-sm w-fit'>Popular</span>
                 <div className='flex flex-wrap justify-around items-center gap-x-14 gap-y-4'>
                     {artworks && artworks.map((piece, index) => {
-                       return piece.image_id !==null && <ExploreItem key={piece.id} size={index % 2} piece={piece} iiif_url={iiif_url ? iiif_url : ''}/>
+                       return piece.image_id !==null && 
+                       <ExploreItem 
+                            key={piece.id} 
+                            expand={{expanded, expandItem}} 
+                            size={index % 2} piece={piece} 
+                            pieceInfo={{otherWorks,setPieceInfo}} 
+                            iiif_url={iiif_url ? iiif_url : ''}/>
                     })}
                 </div>
             </section>
