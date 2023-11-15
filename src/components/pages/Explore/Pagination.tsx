@@ -14,6 +14,7 @@ export type PaginationData = {
     currentPage: number
     totalPages: number
     itemsToUpdate: (value: ExploreData) => void
+    loadPage: (num: number) => void
 }
 
 export const Pagination = ({paginationData}: PaginationProps) => {
@@ -21,24 +22,26 @@ export const Pagination = ({paginationData}: PaginationProps) => {
     const [prevItemsToUpdate, setPrevItemsToUpdate] = useState<ExploreData | null>()
     const [nextItemsToUpdate, setNextItemsToUpdate] = useState<ExploreData | null>()
     const [currentPage, setCurrentPage] = useState(paginationData.currentPage)
+    const [inputValue, setInputValue] = useState<string>(JSON.stringify(paginationData.currentPage))
+    const [inputFieldSize, setInputFieldSize] = useState(4)
 
     const prevAction = () => {
         if (prevItemsToUpdate) {
             paginationData.itemsToUpdate(prevItemsToUpdate)
         }
-        console.log('prev action clicked')
+        // console.log('prev action clicked')
     }
 
     const nextAction = () => {
         if (nextItemsToUpdate) {
             paginationData.itemsToUpdate(nextItemsToUpdate)
         }
-        console.log('next action clicked')
+        // console.log('next action clicked')
     }
 
     useEffect(() => {
         //load prev items
-        if (paginationData.prev != undefined) {
+        if (paginationData.prev !== undefined) {
             axios.get(paginationData.prev)
         .then(res => {
             setPrevItemsToUpdate(res.data)
@@ -49,7 +52,7 @@ export const Pagination = ({paginationData}: PaginationProps) => {
         }
 
         //load next items
-        if (paginationData.next != undefined) {
+        if (paginationData.next !== undefined) {
             axios.get(paginationData.next)
         .then(res => {
             setNextItemsToUpdate(res.data)
@@ -64,18 +67,63 @@ export const Pagination = ({paginationData}: PaginationProps) => {
 
     }, [paginationData])
 
+    useEffect(() => {
+        setInputValue(JSON.stringify(currentPage))
+    }, [currentPage])
 
+    useEffect(() => {
+        console.log('inputFieldSize:', inputFieldSize)
+    }, [inputFieldSize])
+
+    const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setInputValue(event.target.value)
+        const inputLength = event.target.value.length
+        console.log(event.target)
+        if(inputLength === 1 || inputLength < 1) {
+            setInputFieldSize(4)
+            console.log('1 char')
+        } else if (inputLength === 2) {
+            setInputFieldSize(6)
+            console.log('2 char')
+        } else if (inputLength === 3) {
+            setInputFieldSize(8)
+            console.log('3 char')
+        } else {
+            setInputFieldSize(10)
+            console.log('>3 char')
+        }
+    }
+
+    const handleInputBlur = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setInputValue(JSON.stringify(currentPage))
+    }
+
+    const handleInputKeyPress = (event: React.KeyboardEvent<HTMLInputElement>) => {
+        const number = parseFloat(inputValue)
+        if (event.key === 'Enter' && !Number.isNaN(number)) {
+           paginationData.loadPage(number)
+           event.currentTarget.blur()
+        }
+    }
 
 
     return (
-        <div className='flex gap-6 items-center mb-20'>
+        <div className='flex gap-4 items-center mb-20'>
             <OutlineButtonWithIconBefore 
-                state={prevItemsToUpdate != undefined ? 'active' : 'disabled'} 
+                state={prevItemsToUpdate !== undefined ? 'active' : 'disabled'} 
                 label="Prev" 
                 action={prevAction} />
-            <span className='text-cream/50'>Page {currentPage} of  {paginationData.totalPages}</span>
+            {/* <span className='text-cream/50'>Page {currentPage} of  {paginationData.totalPages}</span> */}
+            <span className='text-cream/50 flex items-center gap-1'>
+                Page 
+                <input className={`text-cream bg-coffee w-${inputFieldSize} text-center hover:border rounded-md hover:border-cream/50 focus:outline-cream/20`} 
+                value={inputValue} 
+                onChange={handleInputChange}
+                onBlur={handleInputBlur}
+                onKeyDown={handleInputKeyPress}/>
+                of  {paginationData.totalPages}</span>
             <OutlineButtonWithIconAfter 
-                state={nextItemsToUpdate != undefined ? 'active' : 'disabled'} 
+                state={nextItemsToUpdate !== undefined ? 'active' : 'disabled'} 
                 label="Next" 
                 action={nextAction} />
         </div>

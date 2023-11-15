@@ -7,6 +7,7 @@ body {
   font-family: 'Geist',-apple-system, BlinkMacSystemFont, 'Roboto','Helvetica Neue',sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  scroll-behavior: smooth;
 }
 
 code {
@@ -16,4 +17,16 @@ code {
 @font-face {
   font-family: "Geist";
   src: url('./fonts/GeistVariableVF.ttf');
+}
+
+/* Add your Tailwind CSS styles here */
+
+.radial-gradient {
+  background: radial-gradient(100% 100% at 50% 0%, rgba(252, 238, 210, 0.20) 0%, rgba(252, 238, 210, 0.00) 81.04%);
+  filter: blur(10px);
+}
+
+.coffee-gradient {
+  background: radial-gradient(100% 100% at 50% 0%, #302103 0%, rgba(48, 33, 3, 0.30) 81.04%);
+  backdrop-filter: blur(10px);
 }

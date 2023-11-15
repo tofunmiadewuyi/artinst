@@ -36,7 +36,7 @@ export const ExploreItem = ({expand, size, piece, iiif_url}: ExploreItemProps) =
     }
 
     return(
-        <div onClick={handleClick} className="explore-view group flex flex-col gap-5 transition duration-700 ease-in-out hover:cursor-pointer">
+        <div onClick={handleClick} className=" group flex flex-col gap-5 transition duration-700 ease-in-out hover:cursor-pointer">
             <div className="bg-white p-2 group-hover:scale-105 transition duration-300 ease-out">
             <img className={`${size === 1 ? 'w-64' : 'w-48'} object-cover `} 
                 src={imageUrl} 
@@ -45,7 +45,7 @@ export const ExploreItem = ({expand, size, piece, iiif_url}: ExploreItemProps) =
                 />
             </div>
             <div className={`${size === 1 ? 'w-64' : 'w-44'} text-left opacity-0 group-hover:opacity-100 transition duration-300 ease-out`}>
-                <p className="text-cream font-semibold ">{piece.title}</p>
+                <p className="text-cream font-semibold line-clamp-4">{piece.title}</p>
                 <p className=" text-cream/60">{piece.artist_title}</p>
             </div>
         </div>

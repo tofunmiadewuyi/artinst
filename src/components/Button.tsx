@@ -8,7 +8,7 @@ export const FilledButton = ({label, action}: ButtonProps) => {
     return(
         <button 
             onClick={() => action()}
-            className="bg-white px-5 py-3 text-xl font-medium text-coffee rounded-2xl w-max hover:bg-cream hover:scale-105 transition duration-300">
+            className="bg-cream px-5 py-3 text-xl font-medium text-coffee rounded-2xl w-max hover:bg-white hover:scale-105 transition duration-300">
             {label}
         </button>
     )
@@ -72,7 +72,7 @@ export const OutlineButtonWithIconAfter = ({label, action, state}: ButtonProps) 
 export const TextButton = ({label, action}: ButtonProps) => {
     return (
         <button onClick={() => action()} 
-            className='hidden lg:block underline underline-offset-4 font-medium w-fit hover:no-underline hover:text-cream hover:-translate-y-[2px] transition ease-out'>
+            className=' underline underline-offset-4  w-fit hover:no-underline hover:text-cream hover:-translate-y-[2px] transition ease-out'>
             {label}
         </button>
     )
@@ -81,7 +81,7 @@ export const TextButton = ({label, action}: ButtonProps) => {
 export const TextButtonWithIconBefore = ({label, action, state}: ButtonProps) => {
     return (
         <button onClick={() => action()} 
-            className='hidden lg:block underline underline-offset-4 font-medium w-fit hover:no-underline hover:text-cream hover:-translate-y-[2px] transition ease-out'>
+            className=' underline underline-offset-4 w-fit hover:no-underline hover:text-cream hover:-translate-y-[2px] transition ease-out'>
             <span>{`<-`}</span>  {label}
         </button>
     )

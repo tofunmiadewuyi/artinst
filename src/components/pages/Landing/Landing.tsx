@@ -78,7 +78,7 @@ export function Landing() {
                     </h1>
                 </section>
                 <section className="text-left flex flex-col gap-8 flex-1">
-                    <p className="text-xl xl:text-2xl text-cream leading-9">Discover some of the greatest works of curated by the <em className="font-bold">Art Institute of Chicago</em>. Get in-depth and learn more about your favourites and most fascinating pieces.</p>
+                    <p className="text-xl xl:text-2xl text-cream leading-9">Discover some of the greatest works of art. Curated by the <em className="font-bold">Art Institute of Chicago</em>, get in-depth and learn more about your favourites and most fascinating pieces.</p>
                     <FilledButton state='active' label='Get Started' action={() => changePage('Explore')}/>
                 </section>
                 <Attribution title={showing.title} artist={showing.artist_title} credit_line={showing.credit_line}/>
