@@ -1,15 +1,29 @@
-import { Otherworks, ExploreData, Piece } from '../../../types'
+import SearchIcon from '../../icons/search.svg'
+import dimensionsIcon from '../../icons/dimensions.svg'
 import { ExploreItem } from './ExploreItem'
 import { Artwork } from '../Landing/Landing'
 import { useEffect, useState } from 'react'
 import { Pagination, PaginationData } from './Pagination'
+import axios from 'axios'
+import { Otherworks, Piece } from '../../../types'
 import { TextButton, TextButtonWithIconBefore } from '../../Button'
 import { Chip } from '../../Chip'
-import SearchIcon from '../../icons/search.svg'
-import dimensionsIcon from '../../icons/dimensions.svg'
-import axios from 'axios'
+
+export type ExploreData = {
+    config: {
+        iiif_url: string
+    }
+    data: []
+    pagination: {
+        prev_url: string
+        next_url: string
+        current_page: number
+        total_pages: number
+    }
+}
 
 export const Explore = () => {
+
     const [iiif_url, set_iiif_url] = useState<string>()
     const [artworks, setArtworks] = useState<Artwork[]>()
     const [pagination, setPagination] = useState<PaginationData>({prev:'', next:'', currentPage: 1, totalPages: 1, itemsToUpdate: (value: ExploreData) => {} })
@@ -40,8 +54,12 @@ export const Explore = () => {
         setExpanded(id)
     }
 
+    const setPieceInfo =  (works: Otherworks[]) => {
+        // setOTherWorks(works)
+    }
+
     useEffect(() => {
-        const url = `https://api.artic.edu/api/v1/artworks?fields=id,image_id,title,artist_title,[term][is_public_domain}=true,[has_not_been_viewed_much]=false&page=7&limit=${24}`
+        const url = `https://api.artic.edu/api/v1/artworks?fields=id,image_id,title,artist_title,[term][is_public_domain}=true,[has_not_been_viewed_much]=false&page=3&limit=${24}`
         axios.get(url)
         .then((res) => {
             refreshData(res.data)
@@ -71,50 +89,13 @@ export const Explore = () => {
                 styleTitles: data.style_titles,
                 thumbnail: data.thumbnail
             })
-            getOtherWorks(data.artist_title)
+            // getOtherWorks(data.artist_title)
         })
         .catch(err => {
             console.error("Error:", err)
-        })  
-    }
-
-    const getOtherWorks = (name: string) => {
-        const encodedName = encodeURIComponent(name)
-        const url = `https://api.artic.edu/api/v1/artworks/search?q=${encodedName}`
-        axios.get(url)
-        .then(res => {
-            const linkArray: string[] = []
-            for (let i = 0; i < 5; i++) {
-                linkArray.push(res.data.data[i].api_link)
-            }
-            loadOtherWorks(linkArray)
-            console.log('called getOtherWorks')
         })
+        
     }
-
-    const loadOtherWorks = (links: string[]) => {
-        // Create an array of promises for each axios.get call
-        const promises = links.map(link => axios.get(link));
-      
-        // Use Promise.all to wait for all promises to resolve
-        Promise.all(promises)
-          .then(responses => {
-            // Process each response and create the works array
-            const works = responses.map((res, index) => ({
-              artist: res.data.data.artist_title,
-              image_url: `${res.data.config.iiif_url}/${res.data.data.image_id}/full/420,/0/default.jpg`,
-              title: res.data.data.title,
-              id: res.data.data.id
-            }));
-      
-            // Set the state with the completed works array
-            setOTherWorks(works);
-          })
-          .catch(error => {
-            console.error('Error fetching other works:', error);
-          });
-      };
-
     
     const backToExplore = () => {
         setExpanded(0)
@@ -132,12 +113,13 @@ export const Explore = () => {
             styleTitles: [],
             thumbnail:  {alt_text: ''}
         })
-        setOTherWorks(undefined)
     }
 
     return(
         <>
-                <div className={`${expanded > 0 ? 'flex' : 'hidden'} expanded-view page absolute w-screen h-screen bg-coffee p-7 sm:p-12 lg:p-16 text-left text-white`}>
+            {
+                expanded > 0 ? 
+                <div className="expanded-view page absolute top-0 left-0 w-screen h-screen flex bg-coffee p-7 sm:p-12 lg:p-16 text-left text-white">
                         <span className='absolute top-0 z-0 left-0 h-screen overflow-hidden flex items-center'>
                             <img src={pieceDetails.imageUrl} className='w-screen h-auto ' alt=''/>
                         </span>
@@ -176,16 +158,15 @@ export const Explore = () => {
                                     
                                 </div>
                                 <div className='hidden lg:flex flex-col gap-3 flex-1'>
-                                    <p className='text-xs text-white/70 font-semibold'>Others by {pieceDetails.artist}</p>
-                                    <div className=' overflow-y-visible overflow-x-auto max-w-lg xl:max-w-full max-h-full flex gap-6'>
-                                            {otherWorks?.map((work) => {
-                                                return (
-                                                <div key={work.id} onClick={() => expandItem(work.id)} className=' flex items-center shrink-0 w-2/5 xl:max-w-[120px] xl:h-full hover:scale-105 transition ease-out hover:cursor-pointer'>
-                                                <img src={work.image_url} alt={''}/>
+                                    { otherWorks !== undefined && <p className='text-xs text-white/70 font-semibold'>Others by {pieceDetails.artist}</p>}
+                                    <div className=' overflow-x-scroll max-w-lg xl:max-w-full max-h-full flex gap-6'>
+                                        { otherWorks?.map((work) => {
+                                            return (
+                                                <div key={work.id} className=' flex items-center shrink-0 w-2/5 xl:max-w-[120px] xl:h-full'>
+                                                    <img src={work.image_url} alt={`${work.title} artwork by ${work.artist}`}/>
                                                 </div>
-                                                )
-                                            })}
-                                        
+                                            )
+                                        }) }
                                     </div>
                                 </div>
                             </div>
@@ -194,8 +175,8 @@ export const Explore = () => {
                             </div>
                         </div>
                     </div>
-                
-                <div className={`${ expanded > 0 ? ' hidden' : ' flex' } explore-view bg-coffee text-cream h-full w-screen flex-col gap-10 px-6 items-center lg:px-12`}>
+                :
+                <div className={`explore-view bg-coffee text-cream ${ expanded > 0 ? 'h-screen overflow-hidden' : 'h-full' }  w-screen flex flex-col gap-10 px-6 items-center lg:px-12`}>
                     <section className="max-w-full h-min header mt-20 flex flex-col gap-6 items-center">
                         <div className="flex flex-col gap-3 text-left sm:text-center items-center">
                             <h1 className=" text-[56px] leading-[56px] font-bold tracking-tighter ">Explore to your hearts content.</h1>
@@ -223,7 +204,7 @@ export const Explore = () => {
                     </section>
                     <Pagination paginationData={pagination}/>
                 </div>
-            
+            }
         </>
     )
 }

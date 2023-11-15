@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react"
 import { OutlineButtonWithIconBefore,  OutlineButtonWithIconAfter } from "../../Button"
 import axios from "axios"
-import { ExploreData } from "./Explore"
+import { ExploreData } from '../../../types'
 
 
 type PaginationProps = {
