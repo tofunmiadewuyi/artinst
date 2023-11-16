@@ -27,6 +27,6 @@ code {
 }
 
 .coffee-gradient {
-  background: radial-gradient(100% 100% at 50% 0%, #302103 0%, rgba(48, 33, 3, 0.30) 81.04%);
+  background: radial-gradient(100% 100% at 50% 0%, #302103 0%, rgba(48, 33, 3, 0.40) 81.04%);
   backdrop-filter: blur(7px);
 }

@@ -72,19 +72,14 @@ export const Pagination = ({paginationData}: PaginationProps) => {
     const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setInputValue(event.target.value)
         const inputLength = event.target.value.length
-        console.log(event.target)
         if(inputLength === 1 || inputLength < 1) {
             setInputFieldSize(4)
-            console.log('1 char')
         } else if (inputLength === 2) {
             setInputFieldSize(6)
-            console.log('2 char')
         } else if (inputLength === 3) {
             setInputFieldSize(8)
-            console.log('3 char')
         } else {
             setInputFieldSize(10)
-            console.log('>3 char')
         }
     }
 
@@ -110,7 +105,7 @@ export const Pagination = ({paginationData}: PaginationProps) => {
             {/* <span className='text-cream/50'>Page {currentPage} of  {paginationData.totalPages}</span> */}
             <span className='text-cream/50 flex items-center gap-1'>
                 Page 
-                <input className={`text-cream bg-coffee w-${inputFieldSize} text-center hover:border rounded-md hover:border-cream/50 focus:outline-cream/20`} 
+                <input className={`text-cream bg-coffee w-${inputFieldSize} max-w-[2.5rem] text-center hover:border rounded-md hover:border-cream/50 focus:outline-cream/20`} 
                 value={inputValue} 
                 onChange={handleInputChange}
                 onBlur={handleInputBlur}

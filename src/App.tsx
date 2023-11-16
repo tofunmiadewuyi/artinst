@@ -17,7 +17,7 @@ function App() {
   }
 
   return (
-    <div className="App">
+    <div className="App bg-coffee min-h-screen">
       <NavContext.Provider value={changePage}>
         {isShowing === 'Landing' && <Landing/>}
         {isShowing === 'Explore' && <Explore/>}

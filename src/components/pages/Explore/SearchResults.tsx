@@ -20,7 +20,7 @@ type PaginationInfo = {
 
 export const ExploreResults = ({iiif_url, expandItem, value }: ExploreResultProps) => {
     const [results, setResults] = useState<Result[]>()
-    const [paginationInfo, setPaginationInfo] = useState<PaginationInfo>()
+    const [paginationInfo, setPaginationInfo] = useState<PaginationInfo>({currentPage: 1, totalPages: 1})
     const [currentPage, setCurrentPage] = useState(1)
 
     useEffect(() => {
@@ -33,8 +33,11 @@ export const ExploreResults = ({iiif_url, expandItem, value }: ExploreResultProp
                 currentPage: res.data.pagination.current_page,
                 totalPages: res.data.pagination.total_pages
             })
-            console.log(res.data)
         })
+
+        if (value.length < 1) {
+            setCurrentPage(1)
+        }
     },[value, currentPage])
 
     const handleClick = (id: number) => {
@@ -42,9 +45,10 @@ export const ExploreResults = ({iiif_url, expandItem, value }: ExploreResultProp
     }
 
     const handlePagination = (direction: number) => {
+        const totalPages = paginationInfo?.totalPages
         if(currentPage === 1 && direction < 1) {
             return
-        } else {
+        } else if(currentPage < totalPages) {
             setCurrentPage(currentPage + direction)
         }
     }
@@ -53,7 +57,7 @@ export const ExploreResults = ({iiif_url, expandItem, value }: ExploreResultProp
         <section className='flex w-full flex-col gap-2.5 items-center'>
             { results && results.map((result) => {
             return (<div key={result.id} 
-                        className="px-3 w-full py-2 hover:cursor-pointer rounded-xl bg-cream/5 hover:bg-cream/10 hover:scale-105 transition duration-75"
+                        className="px-3 w-full py-2 hover:cursor-pointer rounded-xl bg-cream/5= text-left hover:bg-cream/10 hover:scale-105 transition duration-75"
                         onClick={() =>handleClick(result.id)}>
                         <p>{result.title}</p>
                     </div> )

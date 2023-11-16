@@ -32,3 +32,31 @@ export type ExploreData = {
         total_pages: number
     }
 }
+
+export type SearchResetAction = {
+    type: 'clear' | 'reset'
+}
+
+export type SearchUpdateAction = {
+    type: 'typing'
+    payload: string
+}
+
+export type ToggleDescAction = {
+    type: 'toggleDesc'
+}
+
+export type ExpandAction = {
+    type: 'expand'
+    payload: number
+}
+
+export type UpdatePieceAction = {
+    type: 'update piece'
+    payload: Piece 
+}
+
+export type UpdateOtherWorksAction = {
+    type: 'clear otherworks' | 'update otherworks'
+    payload?: Otherworks[]
+}
