@@ -8,8 +8,10 @@ import { Chip } from '../../Chip'
 import SearchIcon from '../../icons/search.svg'
 import dimensionsIcon from '../../icons/dimensions.svg'
 import artistIcon from '../../icons/artist.svg'
+import clearIcon from '../../icons/clear.svg'
 import axios from 'axios'
 import '../../../index.css'
+import { ExploreResults } from './ExploreResults'
 
 export const Explore = () => {
     const [iiif_url, set_iiif_url] = useState<string>()
@@ -21,6 +23,8 @@ export const Explore = () => {
     const [showMore, setShowMore] = useState(false)
     const [pageNumber, setPageNumber] = useState(7)
     const [searchValue, setSearchValue] = useState('')
+    const [isSearching, setIsSearching] = useState(false)
+    const [isShowing, setIsShowing] = useState('page')
  
     const paginatedItems = (value:ExploreData) => {
         refreshData(value)
@@ -48,6 +52,7 @@ export const Explore = () => {
     const expandItem = (id: number) => {
         getExploreItemDetails(id)
         setExpanded(id)
+        setIsShowing('piece')
     }
 
     useEffect(() => {
@@ -137,24 +142,31 @@ export const Explore = () => {
             thumbnail:  {alt_text: ''}
         })
         setOTherWorks(undefined)
+        setIsShowing('page')
     }
+
+    useEffect(() => {
+        console.log(searchValue)
+        if (searchValue.length > 0) {
+            setIsSearching(true)
+        } else {
+            setIsSearching(false)
+        }
+    }, [searchValue])
 
     const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setSearchValue(event.target.value)
-    }
-
-    const handleSearchEnter = () => {
-
+        setSearchValue(event.target.value) 
     }
 
     return(
         <>
+            { isShowing === 'piece' &&
                 <div className={`${expanded > 0 ? 'flex' : 'hidden'} expanded-view page absolute w-screen h-screen bg-coffee p-7 sm:p-12 lg:p-16 text-left text-white`}>
                         <span className='absolute top-0 z-0 left-0 h-screen overflow-hidden flex items-center'>
                             <img src={pieceDetails.imageUrl} className='w-screen h-auto ' alt=''/>
                         </span>
                         <span className='absolute top-0 left-0 h-screen w-screen backdrop-blur-2xl bg-coffee/50'/>
-                        <div className={`content relative overscroll-none= flex flex-col-reverse lg:flex-row z-10 gap-6 sm:gap-8 xl:gap-16 ${showMore ? '' : 'justify-end'} lg:justify-between w-full lg:h-full overflow-auto `}>
+                        <div className={`content relative overscroll-none= flex flex-col-reverse lg:flex-row z-20 gap-6 sm:gap-8 xl:gap-16 lg:justify-between w-full lg:h-full overflow-auto `}>
                             <div className="info w-full lg:w-3/6 flex flex-col gap-3 sm:gap-8">
                                 <TextButtonWithIconBefore label='Explore' action={backToExplore} state='active'/>
                                 <div className="details flex flex-col md:flex-row lg:flex-col gap-4">
@@ -167,11 +179,12 @@ export const Explore = () => {
                                             <p className="artist text-xl font-semibold inline-flex ">
                                                 {pieceDetails.artist && <img src={artistIcon} className=' mr-1 opacity-80' alt='artist-icon'/>}
                                                 {pieceDetails.artist}</p>
-                                            <p className=" text-sm leading-6 text-white/70">{pieceDetails.copyrightNotice}</p>
+                                            
                                             <div className="dimensions flex gap-1 text-sm leading-6 text-white/70">
                                                 { pieceDetails.dimensions && <img src={dimensionsIcon} alt='dimensions-icon'/>}
                                                 {pieceDetails.dimensions}
                                             </div>
+                                            <p className=" text-sm leading-6 text-white/70">{pieceDetails.copyrightNotice}</p>
                                         </div>
                                         <div className="pills flex gap-3 flex-wrap">
                                             { pieceDetails.classificationTitles && pieceDetails?.classificationTitles.map((classification, index) => {
@@ -190,7 +203,7 @@ export const Explore = () => {
                                     </div>
                                     
                                 </div>
-                                <div className='otherworks hidden lg:flex flex-col gap-3 flex-1'>
+                                <div className='Otherworks flex lg:flex flex-col gap-3 flex-1'>
                                     { otherWorks && <p className='text-xs text-white/70 font-semibold'>Similar to "<em>{pieceDetails.title}"</em></p>}
                                     <div className=' overflow-y-visible overflow-x-auto max-w-lg xl:max-w-full max-h-full flex gap-6'>
                                             {otherWorks?.map((work) => {
@@ -211,11 +224,12 @@ export const Explore = () => {
                                 }
                         </div>
                     </div>
-                
+                }
+            { isShowing === 'page' &&
                 <div className={`${ expanded > 0 ? ' hidden' : ' flex' } explore-view relative bg-coffee text-cream h-full w-screen flex-col gap-10 items-center`}>
                     <span className='radial-gradient w-screen h-64 fixed top-0 '/>
-                    <section className="relativelg: sticky top-0 pt-12 pb-6 coffee-gradient h-min w-full z-10 max-w-full header mt-12= flex flex-col gap-4 items-center">
-                        <div className=" h-min flex flex-col gap-3 text-left sm:text-center items-center">
+                    <section className={`header-group ${isSearching ? 'h-screen' : 'h-min'} sticky top-0 pt-6 sm:pt-12 pb-6 px-6 lg:px-12 coffee-gradient w-full z-10 max-w-full mt-12= flex flex-col gap-4 items-center`}>
+                        <div className="header h-min flex flex-col gap-3 text-left sm:text-center items-center">
                             <h1 className=" text-[40px] md:text-[56px] leading-[40px] md:leading-[56px] font-bold tracking-tighter ">Explore to your hearts content.</h1>
                             <p className=" text-lg md:text-xl leading-7 md:leading-9 text-cream/60 max-w-2xl">Discover popular artworks, by famous artists recent and from history.</p>
                         </div>
@@ -226,9 +240,16 @@ export const Explore = () => {
                                 placeholder="Search by artist name, title, keywords."
                                 className='placeholder:text-cream/50 p-3 pl-11 rounded-xl bg-cream/5 w-full focus:outline-none focus:ring focus:ring-cream'
                                 value={searchValue}
-                                onChange={handleSearchChange} 
-                                onKeyDown={handleSearchEnter}/>
+                                onChange={handleSearchChange} />
+                                { searchValue.length > 0 &&
+                                    <button onClick={() => setSearchValue('')}
+                                    className='absolute top-3.5 right-3 sm:right-9 flex items-center justify-center w-5 h-5 rounded-lg bg-cream/20 border border-cream/20 hover:bg-cream/40 hover:cursor-pointer hover:scale-110 transition duration-100 ease-out'>
+                                    <img src={clearIcon} alt='claer-icon' />
+                                </button>}
                         </span>
+                        <div className={`${isSearching ? 'flex' : 'hidden'} w-full max-w-md`}>
+                            <ExploreResults iiif_url={`${iiif_url}`} expandItem={expandItem} value={searchValue}/>
+                        </div>
                     </section>
                     <section className='flex flex-col gap-8 items-center px-6 lg:px-12'>
                         <span className='py-1 px-3 rounded-2xl border border-cream/20 text-sm w-fit'>Popular</span>
@@ -245,7 +266,7 @@ export const Explore = () => {
                     </section>
                     <Pagination paginationData={pagination}/>
                 </div>
-            
+            }
         </>
     )
 }

@@ -1,36 +1,75 @@
 import { useEffect, useState } from "react"
-import { ExploreItem } from "./ExploreItem"
 import axios from "axios"
-import { setEmitFlags } from "typescript"
 
 type ExploreResultProps = {
     iiif_url: string
     expandItem: (id: number) => void
+    value: string
 }
 
 type Result = {
+    id: number
     api_link: string
     title: string
 }
 
-export const ExploreResults = ({iiif_url, expandItem }: ExploreResultProps) => {
+type PaginationInfo = {
+    currentPage: number
+    totalPages: number
+}
+
+export const ExploreResults = ({iiif_url, expandItem, value }: ExploreResultProps) => {
     const [results, setResults] = useState<Result[]>()
-    const [searchUrl, setSearchUrl] = useState('')
+    const [paginationInfo, setPaginationInfo] = useState<PaginationInfo>()
+    const [currentPage, setCurrentPage] = useState(1)
 
     useEffect(() => {
-        const url = ''
-        axios.get(searchUrl)
+        const encodedValue = encodeURIComponent(value)
+        const url = `https://api.artic.edu/api/v1/artworks/search?q=${encodedValue}&page=${currentPage}&limit=10`
+        axios.get(url)
         .then((res) => {
-            setResults(res.data)
+            setResults(res.data.data)
+            setPaginationInfo({
+                currentPage: res.data.pagination.current_page,
+                totalPages: res.data.pagination.total_pages
+            })
+            console.log(res.data)
         })
-    })
+    },[value, currentPage])
+
+    const handleClick = (id: number) => {
+        expandItem(id)
+    }
+
+    const handlePagination = (direction: number) => {
+        if(currentPage === 1 && direction < 1) {
+            return
+        } else {
+            setCurrentPage(currentPage + direction)
+        }
+    }
 
     return (
-        <section className='flex flex-col gap-8 items-center'>
-            <span className='py-1 px-3 rounded-2xl border border-cream/20 text-sm w-fit'>Popular</span>
-            <div className='flex flex-wrap justify-around items-center gap-x-14 gap-y-4'>
-                
-            </div>
+        <section className='flex w-full flex-col gap-2.5 items-center'>
+            { results && results.map((result) => {
+            return (<div key={result.id} 
+                        className="px-3 w-full py-2 hover:cursor-pointer rounded-xl bg-cream/5 hover:bg-cream/10 hover:scale-105 transition duration-75"
+                        onClick={() =>handleClick(result.id)}>
+                        <p>{result.title}</p>
+                    </div> )
+            })}
+            <div className="pagination mt-2 text-sm flex gap-2">
+                <button className="flex text-[10px] h-6 w-6 font-bold backdrop-blur-sm rounded-lg justify-center items-center bg-cream/10 border border-cream/10 hover:bg-cream/100 hover:text-coffee hover:scale-110 transition duration-100 ease-out"
+                        onClick={() => handlePagination(-1)}>
+                    {`<-`}
+                </button>
+                <p className="text-cream/60 font-medium">Result page {paginationInfo?.currentPage} of {paginationInfo?.totalPages}</p>
+                <button className="flex text-[10px] h-6 w-6 font-bold backdrop-blur-sm rounded-lg justify-center items-center bg-cream/10 border border-cream/10 hover:bg-cream/100 hover:text-coffee hover:scale-110 transition duration-100 ease-out"
+                        onClick={() => handlePagination(+1)}>
+                    {`->`}
+                </button>
+              
+            </div>        
         </section>
     )
 }

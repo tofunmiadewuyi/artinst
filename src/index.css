@@ -23,10 +23,10 @@ code {
 
 .radial-gradient {
   background: radial-gradient(100% 100% at 50% 0%, rgba(252, 238, 210, 0.20) 0%, rgba(252, 238, 210, 0.00) 81.04%);
-  filter: blur(10px);
+  filter: blur(4px);
 }
 
 .coffee-gradient {
   background: radial-gradient(100% 100% at 50% 0%, #302103 0%, rgba(48, 33, 3, 0.30) 81.04%);
-  backdrop-filter: blur(10px);
+  backdrop-filter: blur(7px);
 }

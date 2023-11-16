@@ -45,7 +45,6 @@ export const Pagination = ({paginationData}: PaginationProps) => {
             axios.get(paginationData.prev)
         .then(res => {
             setPrevItemsToUpdate(res.data)
-            console.log('prev items set')
         })
         } else {
             setPrevItemsToUpdate(undefined)
@@ -56,7 +55,6 @@ export const Pagination = ({paginationData}: PaginationProps) => {
             axios.get(paginationData.next)
         .then(res => {
             setNextItemsToUpdate(res.data)
-            console.log('next items set')
         })
         } else {
             setNextItemsToUpdate(undefined)
@@ -70,10 +68,6 @@ export const Pagination = ({paginationData}: PaginationProps) => {
     useEffect(() => {
         setInputValue(JSON.stringify(currentPage))
     }, [currentPage])
-
-    useEffect(() => {
-        console.log('inputFieldSize:', inputFieldSize)
-    }, [inputFieldSize])
 
     const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setInputValue(event.target.value)
