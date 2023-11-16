@@ -64,21 +64,21 @@ export function Landing() {
 
 
     return (
-        <div className="page w-screen h-screen bg-coffee  flex justify-center items-center px-8 xl:px-20">
+        <div className="page w-screen h-screen bg-coffee flex justify-center items-center px-8 xl:px-20">
             <span className="image-container absolute h-screen w-screen top-0 left-0 -z-1 overflow-hidden ">
                 <img src={imageURL} alt='artwork as background' className={`h-full min-w-fit sm:h-auto sm:w-full ${isVisible ? 'opacity-100' : 'opacity-0'} transition-opacity duration-500 ease-in-out`}/>
             </span>
             <span className="image-tint absolute w-screen h-screen bg-black/40"/>
              <div className="content flex-col xl:flex-row flex items-baseline z-0">
                 <section className=" flex-1 overflow-hidden">
-                    <h1 className='ml-[-20px] text-left text-cream p-6 text-7xl tracking-tighter xl:text-[120px] xl:leading-[102px] font-bold'>
+                    <h1 className='ml-[-20px] text-left text-cream p-6 text-7xl leading-[64px] tracking-tighter xl:text-[120px] xl:leading-[102px] font-bold'>
                         Explore <br/> 
                         Awesome <br/> 
                         Artworks.
                     </h1>
                 </section>
                 <section className="text-left flex flex-col gap-8 flex-1">
-                    <p className="text-xl xl:text-2xl text-cream leading-9">Discover some of the greatest works of art. Curated by the <em className="font-bold">Art Institute of Chicago</em>, get in-depth and learn more about your favourites and most fascinating pieces.</p>
+                    <p className="text-base xl:text-2xl text-cream leading-7 xl:leading-9">Discover some of the greatest works of art. Curated by the <em className="font-bold">Art Institute of Chicago</em>, get in-depth and learn more about your favourites and most fascinating pieces.</p>
                     <FilledButton state='active' label='Get Started' action={() => changePage('Explore')}/>
                 </section>
                 <Attribution title={showing.title} artist={showing.artist_title} credit_line={showing.credit_line}/>

@@ -234,7 +234,7 @@ export const Explore = () => {
                         </span>
                         <span className='absolute top-0 left-0 h-screen w-screen backdrop-blur-2xl bg-coffee/50'/>
                         <div className={`content relative overscroll-none= flex flex-col-reverse lg:flex-row z-20 gap-6 sm:gap-8 xl:gap-16 lg:justify-between w-full lg:h-full overflow-auto `}>
-                            <div className="info w-full lg:w-3/6 flex flex-col gap-3 sm:gap-8">
+                            <div className="info w-full lg:w-3/6 flex flex-col gap-8 sm:gap-8">
                                 <TextButtonWithIconBefore label='Explore' action={backToExplore} state='active'/>
                                 <div className="details flex flex-col md:flex-row lg:flex-col gap-4">
                                     <div className="piece-details flex flex-1 flex-col gap-4">
