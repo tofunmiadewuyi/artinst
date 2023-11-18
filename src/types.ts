@@ -16,9 +16,10 @@ export type Piece = {
     classificationTitles: [] //Array
     artworkType: string
     copyrightNotice: string
-    styleTitles: []
+    styleTitles: string[]
     thumbnail: {alt_text: string}
 }
+
 
 export type ExploreData = {
     config: {

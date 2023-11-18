@@ -11,9 +11,10 @@ type ExploreItemProps = {
         title: string
     }
     iiif_url: string
+    index: number
 }
 
-export const ExploreItem = ({expand, size, piece, iiif_url}: ExploreItemProps) => {
+export const ExploreItem = ({expand, size, piece, iiif_url, index}: ExploreItemProps) => {
 
     const [imageUrl, setImageURL] = useState(`${iiif_url}/${piece.image_id}/full/843,/0/default.jpg` )
     const fallbackUrls = [`${iiif_url}/${piece.image_id}/full/420,/0/default.jpg`, `${iiif_url}/${piece.image_id}/full/210,/0/default.jpg`,];
@@ -35,12 +36,22 @@ export const ExploreItem = ({expand, size, piece, iiif_url}: ExploreItemProps) =
         expand(piece.id) 
     }
 
+    const handleLoad = (event : React.SyntheticEvent<HTMLImageElement, Event>) => {
+        const ImgEl = event.target as HTMLImageElement
+        const container = ImgEl.parentNode as HTMLElement
+        const delay = (index + 1) * 0.3 * 1000
+        setTimeout(() => {
+            container.style.display = 'block'
+        }, delay )
+    }
+
     return(
         <div onClick={handleClick} className=" group flex flex-col gap-5 transition duration-700 ease-in-out hover:cursor-pointer">
-            <div className="bg-white p-2 group-hover:scale-105 transition duration-300 ease-out">
+            <div className="bg-white hidden explore-item-container animated-image p-2 group-hover:scale-105 transition duration-300 ease-out">
             <img className={`${size === 1 ? 'w-64' : 'w-48'} object-cover `} 
                 src={imageUrl} 
                 alt='artwork'
+                onLoad={handleLoad}
                 onError={tryLoadingImage ? handleImageError : () => console.log('i tried all sizes man')}
                 />
             </div>

@@ -33,3 +33,30 @@ code {
   background: radial-gradient(100% 100% at 50% 0%, #302103 0%, rgba(48, 33, 3, 0.40) 81.04%);
   backdrop-filter: blur(7px);
 }
+
+
+@keyframes slideIn {
+  from {
+    transform: translateX(10%) scale(0.95);
+  }
+  to {
+    transform: translateX(0) scale(1);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 100;
+  }
+}
+
+.animated-image {
+  animation: fadeIn .4s ease-in-out, slideIn .6s ease-out;
+}
+
+.title-group {
+  animation: fadeIn .5s ease-out 2s;
+}

@@ -2,7 +2,6 @@ import { useState } from 'react';
 import './App.css';
 import {Landing} from './components/pages/Landing/Landing'
 import { Explore } from './components/pages/Explore/Explore';
-import { Piece } from './components/pages/Piece/Piece';
 import React from 'react';
 
 type NavContextType = (page: string) => void
@@ -21,7 +20,6 @@ function App() {
       <NavContext.Provider value={changePage}>
         {isShowing === 'Landing' && <Landing/>}
         {isShowing === 'Explore' && <Explore/>}
-        {isShowing === 'Piece' && <Piece/>}
       </NavContext.Provider>
       
     </div>
