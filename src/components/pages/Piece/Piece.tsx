@@ -134,9 +134,13 @@ export const PiecePage = ({ expandItem, iiif_url, expandedId}: PiecePageProps) =
         if (expandedId > 0) getExploreItemDetails(expandedId)
     }, [expandedId])
 
-    useEffect(() => {
-         console.log(pieceState.pieceDetails)
-    }, [pieceState])
+    const handleLoad = (event : React.SyntheticEvent<HTMLImageElement, Event>, index: number) => {
+        const ImgEl = event.target as HTMLImageElement
+        const delay = (index + 1) * 0.25 * 1000
+        setTimeout(() => {
+            ImgEl.style.display = 'block'
+        }, delay )
+    }
 
     return (
         <div className={`expanded-view flex page absolute w-screen h-screen bg-coffee p-7 sm:p-12 lg:p-16 text-left text-white`}>
@@ -184,10 +188,10 @@ export const PiecePage = ({ expandItem, iiif_url, expandedId}: PiecePageProps) =
                                 <div className='Otherworks flex lg:flex flex-col gap-3 flex-1'>
                                     { pieceState.otherWorks.length > 0 && <p className='text-xs text-white/70 font-semibold'>Similar to "<em>{pieceState.pieceDetails.title}"</em></p>}
                                     <div className=' overflow-y-visible overflow-x-auto max-w-lg xl:max-w-full max-h-full flex gap-6'>
-                                            {pieceState.otherWorks?.map((work) => {
+                                            {pieceState.otherWorks?.map((work, index) => {
                                                 return (
-                                                <div key={work.id} onClick={() => expandItem(work.id)} className=' flex items-center shrink-0 w-2/5 xl:max-w-[120px] xl:h-full hover:scale-105 transition ease-out hover:cursor-pointer'>
-                                                <img src={work.image_url} alt={''}/>
+                                                <div key={work.id} onClick={() => expandItem(work.id)} className='flex items-center shrink-0 w-2/5 xl:max-w-[120px] xl:h-full hover:scale-105 transition ease-out hover:cursor-pointer'>
+                                                <img src={work.image_url} alt={''} onLoad={(e) => handleLoad(e,index)} className='hidden animated-image'/>
                                                 </div>
                                                 )
                                             })}

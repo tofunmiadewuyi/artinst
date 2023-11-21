@@ -39,7 +39,7 @@ export const ExploreItem = ({expand, size, piece, iiif_url, index}: ExploreItemP
     const handleLoad = (event : React.SyntheticEvent<HTMLImageElement, Event>) => {
         const ImgEl = event.target as HTMLImageElement
         const container = ImgEl.parentNode as HTMLElement
-        const delay = (index + 1) * 0.3 * 1000
+        const delay = (index + 1) * 0.25 * 1000
         setTimeout(() => {
             container.style.display = 'block'
         }, delay )
