@@ -20,7 +20,7 @@ export function Landing() {
     const [artworks, setArtworks] = useState<Artwork[]>()
     const [showing, setShowing] = useState<Artwork>({ id: 0, image_id: '', title: '', credit_line: '', artist_title: '' })
     const [imageURL, setImageURL] = useState<string>()
-    const [isVisible, setIsVisible] = useState(false)
+    const [isVisible, setIsVisible] = useState(true)
 
     useEffect(() => {
         const imageNumber = 10
@@ -43,7 +43,7 @@ export function Landing() {
                 count = (count + 1) % artworks.length
             }    
             // console.log(count)
-        }, 10000)
+        }, 7000)
 
         return () => clearInterval(intervalId)
     }, [artworks])
@@ -54,19 +54,24 @@ export function Landing() {
             setIsVisible(false)
             setTimeout(() => {
                 setImageURL(image_url)
+                setIsVisible(true)
             }, 500) 
         }
     }, [showing, iiif_url])
 
-    useEffect(() => {
-        setIsVisible(true)
-    }, [imageURL])
+    // useEffect(() => {
+    //     setIsVisible(true)
+    // }, [imageURL])
+
+    const noImage = () => {
+        setIsVisible(false)
+    }
 
 
     return (
         <div className="page w-screen h-screen bg-coffee flex justify-center items-center px-8 xl:px-20">
             <span className="image-container absolute h-screen w-screen top-0 left-0 -z-1 overflow-hidden ">
-                <img src={imageURL} alt='artwork as background' className={`h-full min-w-fit sm:h-auto sm:w-full ${isVisible ? 'opacity-100' : 'opacity-0'} transition-opacity duration-500 ease-in-out`}/>
+               { isVisible && imageURL && <img src={imageURL} alt='artwork as background' onError={noImage} className={`artwork-bg h-full min-w-fit sm:h-auto sm:w-full ${isVisible ? 'opacity-100-' : 'opacity-0-'} transition-opacity- duration-500- ease-in-out-`}/> } 
             </span>
             <span className="image-tint absolute w-screen h-screen bg-black/40"/>
              <div className="content flex-col xl:flex-row flex items-baseline z-0">
@@ -82,7 +87,7 @@ export function Landing() {
                     <FilledButton state='active' label='Get Started' action={() => changePage('Explore')}/>
                 </section>   
             </div>
-            <Attribution title={showing.title} artist={showing.artist_title} credit_line={showing.credit_line}/>
+            {imageURL && <Attribution title={showing.title} artist={showing.artist_title} credit_line={showing.credit_line}/>}
         </div>
     )
 }
